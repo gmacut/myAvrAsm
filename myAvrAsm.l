@@ -25,6 +25,7 @@ int include_stack_ptr = 0;
 
 %option noyywrap
 %x incl
+%x multilineComment
 
 
 
@@ -75,10 +76,26 @@ int include_stack_ptr = 0;
 				
 ;.\n 				{ 
 					/**
-					 * Comments. They begin with ; and span to the end of the line
+					 * Comments that begin with ; and span to the end of the line
 					 */	
 						FileStack->lineNum++; 
 					}
+
+
+
+\/\*				BEGIN(multilineComment);
+
+<multilineComment>\*\/ BEGIN(INITIAL);
+
+<multilineComment>\n { 
+					/**
+					* Newline. Increases line count
+					*/
+ 						FileStack->lineNum++; 
+ 					}
+
+<multilineComment>. ;
+
 
 
 \n 					{ 
