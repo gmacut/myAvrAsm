@@ -11,6 +11,7 @@
 ;------------------------------------------------------------------------------------
 
 .include "m16def.inc"
+.include "m16def.inc"
 ; Interrupt service vectors
 
 	.org $0000
