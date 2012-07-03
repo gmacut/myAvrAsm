@@ -4,6 +4,9 @@
 #include <getopt.h>
 #include <stdlib.h>
 
+#include <string>
+#include <set>
+
 #include "InputFileRecord.h"
 
 #include "myAvrAsm.tab.h"
@@ -35,7 +38,9 @@ int __numberOfInputFiles;
 char **__inputFileNames;
 
 
-InputFileRecord *FileStack;
+InputFileRecord *__fileStack;
+
+std::set<std::string> __defines;
 
 
 
@@ -87,15 +92,15 @@ int main(int argc, char* argv[], char* envp[]) {
 			exit(-1);
 		}
 		yyin = input;
-		FileStack = new InputFileRecord;
-		FileStack->lineNum = 1;
-		FileStack->fileName = __inputFileNames[i];
-		FileStack->file = input;
-		FileStack->previous = NULL;
+		__fileStack = new InputFileRecord;
+		__fileStack->lineNum = 1;
+		__fileStack->fileName = __inputFileNames[i];
+		__fileStack->file = input;
+		__fileStack->previous = NULL;
 		do {
 			yyparse();
 		} while(!feof(yyin));
-		std::cout << "Read " << FileStack->lineNum << " lines from " << FileStack->fileName << std::endl;
+		std::cout << "Read " << __fileStack->lineNum << " lines from " << __fileStack->fileName << std::endl;
  	}
 
  	return 0;

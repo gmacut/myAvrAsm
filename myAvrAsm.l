@@ -5,15 +5,38 @@
 #include <iostream>
 #include <cstring>
 
+#include <string>
+#include <set>
+
 using namespace std;
 
 #define YY_DECL extern int yylex()
 
-extern InputFileRecord *FileStack;
 
-// include files require lex to have separate buffers
+
+
+/*****************************************
+				GLOBALS
+*****************************************/
+extern InputFileRecord *__fileStack;
+
+extern std::set<std::string> __defines;
+
+
+
+
+
+/*****************************************
+*				YY_BUFFER STACK
+*
+* include files support requires lex to 
+* have separate buffers for every file read
+* at the same time
+******************************************/
 #define MAX_INCLUDE_DEPTH 20
+
 YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
+
 int include_stack_ptr = 0;
 
 
@@ -26,6 +49,7 @@ int include_stack_ptr = 0;
 %option noyywrap
 %x incl
 %x multilineComment
+%x preprocessorIgnore
 
 
 
@@ -49,8 +73,8 @@ int include_stack_ptr = 0;
                  		newFile->lineNum = 1;
                  		newFile->file = fopen(newFile->fileName, "r");
                  		if (!(newFile->file)){
-                 			std::cerr 	<< "[" << FileStack->fileName 
-                 						<< ":" << FileStack->lineNum 
+                 			std::cerr 	<< "[" << __fileStack->fileName 
+                 						<< ":" << __fileStack->lineNum 
                  						<< "]: Unable to open include file " 
                  						<< newFile->fileName
                  						<< std::endl;
@@ -61,13 +85,13 @@ int include_stack_ptr = 0;
                      		}
                      		include_stack[include_stack_ptr++] = YY_CURRENT_BUFFER;
 
-                     		newFile->previous = FileStack;
-                 			FileStack = newFile;
-                 			yyin = FileStack->file;
+                     		newFile->previous = __fileStack;
+                 			__fileStack = newFile;
+                 			yyin = __fileStack->file;
                  			
                  			yy_switch_to_buffer( yy_create_buffer( yyin, YY_BUF_SIZE ) );
 
-                 			std::cout << "Reading from included file:" << FileStack->fileName << std::endl;
+                 			std::cout << "Reading from included file:" << __fileStack->fileName << std::endl;
                  		}     					
            		     	BEGIN(INITIAL);
                  	}
@@ -78,7 +102,7 @@ int include_stack_ptr = 0;
 					/**
 					 * Comments that begin with ; and span to the end of the line
 					 */	
-						FileStack->lineNum++; 
+						__fileStack->lineNum++; 
 					}
 
 
@@ -91,10 +115,39 @@ int include_stack_ptr = 0;
 					/**
 					* Newline. Increases line count
 					*/
- 						FileStack->lineNum++; 
+ 						__fileStack->lineNum++; 
  					}
 
 <multilineComment>. ;
+
+
+
+
+
+#define.*\n 		{
+						__defines.insert(yytext+7);
+					}
+
+#ifdef.*\n 			{
+						if (__defines.find(yytext+6) == __defines.end()){
+							BEGIN(preprocessorIgnore);
+						}
+					} 	
+
+#ifndef.*\n 		{
+						if (__defines.find(yytext+7) != __defines.end()){
+							BEGIN(preprocessorIgnore);
+						}
+					}
+
+<preprocessorIgnore>.	;
+
+<preprocessorIgnore>\n  { __fileStack->lineNum++; }
+
+<preprocessorIgnore>#endif 		BEGIN(INITIAL);
+
+
+
 
 
 
@@ -102,7 +155,7 @@ int include_stack_ptr = 0;
 					/**
 					* Newline. Increases line count and returns token NEWLINE
 					*/
- 						FileStack->lineNum++; return NEWLINE; 
+ 						__fileStack->lineNum++; return NEWLINE; 
  					}
 
 .                	{ 
@@ -124,9 +177,9 @@ int include_stack_ptr = 0;
 		                else {
                      		yy_delete_buffer( YY_CURRENT_BUFFER );
                      		yy_switch_to_buffer( include_stack[include_stack_ptr] );
-                     		FileStack = FileStack->previous;
-                     		//yyin = FileStack->file;
-                     		std::cout << "Continuing reading " << FileStack->fileName << std::endl;
+                     		__fileStack = __fileStack->previous;
+                     		//yyin = __fileStack->file;
+                     		std::cout << "Continuing reading " << __fileStack->fileName << std::endl;
                      	}
                  	}
 

@@ -12,7 +12,7 @@ extern int yyparse();
 
 extern FILE *yyin;
 
-extern InputFileRecord *FileStack;
+extern InputFileRecord *__fileStack;
 
 void yyerror(const char *s);
 
@@ -84,6 +84,6 @@ NEWLINES:
 
 
 void yyerror(const char *s) {
-	cout << "[" << FileStack->fileName << ":" << FileStack->lineNum << "]: " << s << endl;
+	cout << "[" << __fileStack->fileName << ":" << __fileStack->lineNum << "]: " << s << endl;
 	exit(-1);
 }
