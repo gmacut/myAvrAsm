@@ -10,7 +10,7 @@ CXXFLAGS=-Wall -Wl,--enable-auto-import
 
 
 
-all: executable mkdir
+all: clean mkdir executable  
 	cp $(PROJNAME).exe $(OUTPUTDIR)
 	cp example/* $(OUTPUTDIR)
 

@@ -28,8 +28,6 @@ extern std::set<std::string> __defines;
 
 
 
-
-
 /*****************************************
 *				YY_BUFFER STACK
 *
@@ -44,6 +42,11 @@ YY_BUFFER_STATE include_stack[MAX_INCLUDE_DEPTH];
 int include_stack_ptr = 0;
 
 
+
+/*******************************************
+				LOCAL GLOBALS
+*******************************************/
+std::set<std::string> _pragmaOnceDefines;
 
 
 %}
@@ -144,13 +147,22 @@ int include_stack_ptr = 0;
 						}
 					}
 
+#pragma[ \t]once		{
+						if (_pragmaOnceDefines.find(std::string(__fileStack->fileName)) != _pragmaOnceDefines.end()){
+							BEGIN(preprocessorIgnore);
+						} else {
+							_pragmaOnceDefines.insert(std::string(__fileStack->fileName));
+						}
+					}
+
 <preprocessorIgnore>.	;
 
-<preprocessorIgnore>\n  { __fileStack->lineNum++; }
+<preprocessorIgnore>\n  { std::cout << "."; 
+						__fileStack->lineNum++; }
 
 <preprocessorIgnore>#endif 		BEGIN(INITIAL);
 
-
+<preprocessorIgnore><<EOF>>		BEGIN(INITIAL);
 
 
 
