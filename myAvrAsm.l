@@ -105,10 +105,11 @@ std::set<std::string> _pragmaOnceDefines;
      
      
 				
-;.\n 				{ 
+;.*\n 				{ 
 					/**
 					 * Comments that begin with ; and span to the end of the line
 					 */	
+					 	//std::cout << "Comment " << __fileStack->fileName << ": " << __fileStack->lineNum << std::endl;
 						__fileStack->lineNum++; 
 					}
 
@@ -132,16 +133,18 @@ std::set<std::string> _pragmaOnceDefines;
 
 
 #define.*\n 		{
-						__defines.insert(yytext+7);
+						__defines.insert(yytext+7); __fileStack->lineNum++;
 					}
 
 #ifdef.*\n 			{
+						__fileStack->lineNum++;
 						if (__defines.find(yytext+6) == __defines.end()){
 							BEGIN(preprocessorIgnore);
 						}
 					} 	
 
 #ifndef.*\n 		{
+						__fileStack->lineNum++;
 						if (__defines.find(yytext+7) != __defines.end()){
 							BEGIN(preprocessorIgnore);
 						}
