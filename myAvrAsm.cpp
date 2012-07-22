@@ -37,9 +37,19 @@ int __numberOfInputFiles;
  */
 char **__inputFileNames;
 
-
+/**
+ * Stack of input file information. Lexers support
+ * for preprocessor #include functionality functions
+ * by stacking input files. This is a top of that  
+ * stack. This global allways has pointer to data
+ * about file currenty being read.
+ */
 InputFileRecord *__fileStack;
 
+/**
+ * Set containing all defined elements (preprocessor
+ * #DEFINE statement)
+ */
 std::set<std::string> __defines;
 
 
@@ -91,7 +101,7 @@ int main(int argc, char* argv[], char* envp[]) {
 			std::cerr << "Couldn't open " << __inputFileNames[i] << " file!";
 			exit(-1);
 		}
-		yyin = input;
+		yyin = input; // give lexer a input file
 		__fileStack = new InputFileRecord;
 		__fileStack->lineNum = 1;
 		__fileStack->fileName = __inputFileNames[i];

@@ -20,6 +20,10 @@ using namespace std;
 *****************************************/
 extern InputFileRecord *__fileStack;
 
+/**
+ * Set containing all defined elements (preprocessor
+ * #DEFINE statement)
+ */
 extern std::set<std::string> __defines;
 
 
@@ -58,9 +62,9 @@ int include_stack_ptr = 0;
 
 
 	
-.[Ii][Nn][Cc][Ll][Uu][Dd][Ee][ \t]*\" 	BEGIN(incl);
+[.#][Ii][Nn][Cc][Ll][Uu][Dd][Ee][ \t]*[\"<] 	BEGIN(incl);
 
-<incl>[^ \t\n]+\"   { 
+<incl>[^ \t\n]+[\">]   { 
 						
 					/* 	
 					 *	Captures .include "file" statement. Opens included file and starts to 
