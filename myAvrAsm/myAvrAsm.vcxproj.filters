@@ -1,0 +1,65 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="lex.yy.c">
+      <Filter>Source - Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="myAvrAsm.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="myAvrAsm.tab.c">
+      <Filter>Source - Generated</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="InputFileRecord.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="myAvrAsm.tab.h">
+      <Filter>Headers - Generated</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitignore" />
+    <None Include="Makefile" />
+    <None Include="runLexAndYacc.bat" />
+    <None Include="example\AVRAssembler1.asm">
+      <Filter>Example input</Filter>
+    </None>
+    <None Include="example\m16def.inc">
+      <Filter>Example input</Filter>
+    </None>
+    <None Include="myAvrAsm.l">
+      <Filter>Lex</Filter>
+    </None>
+    <None Include="myAvrAsm.y">
+      <Filter>Yacc</Filter>
+    </None>
+    <None Include="example\hello.asm">
+      <Filter>Example input</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source">
+      <UniqueIdentifier>{69354bdb-da85-4b20-8886-85109308c861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source - Generated">
+      <UniqueIdentifier>{b98ed2eb-31c3-437b-a6d9-5212762f5635}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers">
+      <UniqueIdentifier>{32480815-b5e6-4edf-b77c-30f883d9edb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Headers - Generated">
+      <UniqueIdentifier>{ee81856c-d576-48dd-8703-78aa4bb2d74b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Example input">
+      <UniqueIdentifier>{a0188b55-5c79-455e-ad62-86b4f7ff09b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lex">
+      <UniqueIdentifier>{99227053-33e0-44ca-8199-bedb66a7a55f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Yacc">
+      <UniqueIdentifier>{01d9081c-1254-460e-8ec6-4296bf79c262}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
