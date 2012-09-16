@@ -1,4 +1,8 @@
 %{
+#pragma warning(disable: 4065)
+#pragma warning(disable: 4083)
+#pragma warning(disable: 4996)
+#pragma warning(disable: 4273)
 
 #include <cstdio>
 #include <iostream>
@@ -23,11 +27,11 @@ void yyerror(const char *s);
 // arbitrary data type!  So we deal with that in Bison by defining a C union
 // holding each of the types of tokens that Flex could return, and have Bison
 // use that union instead of "int" for the definition of "yystype":
-//%union {
-//	int ival;
-//	float fval;
-//	char *sval;
-//}
+%union {
+	int ival;
+	float fval;
+	char *sval;
+}
 
 // define the "terminal symbol" token types I'm going to use (in CAPS
 // by convention), and associate each with a field of the union:
@@ -36,6 +40,8 @@ void yyerror(const char *s);
 //%token <sval> STRING
 
 %token NEWLINE
+%token END_OF_FILE
+%token LINE
 //%token INCLUDE
 //%token ORG
 //%token EQU
@@ -49,36 +55,19 @@ void yyerror(const char *s);
 
 
 %%
-
-top:
-	LINE NEWLINES 	
-	| NEWLINES 			
+ALL: END_OF_FILE				{ YYACCEPT; }
+	| CONTENT END_OF_FILE		{ YYACCEPT; }
 	;
 
-LINE:
-	DIRECTIVE NEWLINES
-	| LABEL NEWLINES
-	| LABEL DIRECTIVE NEWLINES
-	;
-
-LABEL:
-	//IDENTIFIER ':'
-	;
-
-DIRECTIVE:
-	PSEUDOCOMMAND
-	| COMMAND
-	;
-
-PSEUDOCOMMAND:
-	;
-
-COMMAND:
+CONTENT:
+	NEWLINES 			
+	| CONTENT LINE NEWLINES 	{ std::cout << yylval.sval << std::endl; }
+	| CONTENT LINE				{ std::cout << yylval.sval << std::endl; }
 	;
 
 NEWLINES: 
 	NEWLINES NEWLINE
-	| NEWLINE
+	| NEWLINE { /*std::cout << std::endl;*/ }
 	;
 %%
 

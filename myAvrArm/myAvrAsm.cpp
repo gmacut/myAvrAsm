@@ -1,11 +1,11 @@
 #include <iostream>
 #include <cstdio>
 
-#include <getopt.h>
 #include <stdlib.h>
 
 #include <string>
-#include <set>
+#include <map>
+#include <vector>
 
 #include "InputFileRecord.h"
 
@@ -50,7 +50,7 @@ InputFileRecord *__fileStack;
  * Set containing all defined elements (preprocessor
  * #DEFINE statement)
  */
-std::set<std::string> __defines;
+std::map<std::string, std::vector<std::string> > __defines;
 
 
 
@@ -93,9 +93,8 @@ int main(int argc, char* argv[], char* envp[]) {
 		printUsage();
 		exit(-1);
 	}
-
+	
 	for (int i = 0; i < __numberOfInputFiles; i++ ){
-		std::cout << __inputFileNames[i] << std::endl;
 		FILE *input = fopen(__inputFileNames[i], "r");
 		if (!input) {
 			std::cerr << "Couldn't open " << __inputFileNames[i] << " file!";
@@ -112,7 +111,6 @@ int main(int argc, char* argv[], char* envp[]) {
 		} while(!feof(yyin));
 		std::cout << "Read " << __fileStack->lineNum << " lines from " << __fileStack->fileName << std::endl;
  	}
-
  	return 0;
 }
 

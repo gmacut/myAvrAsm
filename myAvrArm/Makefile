@@ -6,7 +6,7 @@ SOURCES=myAvrAsm.cpp myAvrAsm.tab.c lex.yy.c
 OUTPUTDIR=out
 
 CXX=g++
-CXXFLAGS=-Wall -Wl,--enable-auto-import
+CXXFLAGS=-Wall -Wl,--enable-auto-import -Wno-unknown-pragmas
 
 
 
@@ -19,7 +19,7 @@ executable: flex bison
 
 
 flex: bison
-	flex $(PROJNAME).l
+	flex -i $(PROJNAME).l
 
 bison:
 	bison -d $(PROJNAME).y

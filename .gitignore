@@ -3,3 +3,9 @@ out/*
 *.tab.c
 *.tab.h
 *.yy.c
+Debug
+Release
+example
+*.sdf
+*.opensdf
+
