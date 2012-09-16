@@ -6,6 +6,7 @@ out/*
 Debug
 Release
 example
+output
 *.sdf
 *.opensdf
 
