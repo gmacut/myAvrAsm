@@ -3,8 +3,10 @@
 #pragma warning(disable: 4083)
 #pragma warning(disable: 4996)
 #pragma warning(disable: 4273)
+
+
 #include "InputFileRecord.h"
-#include "myAvrAsm.tab.h"
+#include "instructions/index.h"
 
 #include <iostream>
 #include <cstring>
@@ -17,7 +19,11 @@
 
 using namespace std;
 
+#include "myAvrAsm.tab.h"
+
 #define YY_DECL extern int yylex()
+
+
 
 
 
@@ -92,6 +98,7 @@ char *parseDefines(char *src);
 					 *	read from it. 
 					 */
 						/* got the include file name + final character " */
+						__fileStack->lineNum++;
                  		yytext[yyleng-1] = '\0';
                  		InputFileRecord *newFile = new InputFileRecord;
                  		newFile->fileName = strdup(yytext);
@@ -127,8 +134,7 @@ char *parseDefines(char *src);
 					/**
 					 * Comments that begin with ; and span to the end of the line
 					 */	
-					 	//std::cout << "Comment " << __fileStack->fileName << ": " << __fileStack->lineNum << std::endl;
-						__fileStack->lineNum++; 
+					 	__fileStack->lineNum++; 
 					}
 
 
@@ -151,6 +157,7 @@ char *parseDefines(char *src);
 
 
 #define.*\n 		{
+						__fileStack->lineNum++;
 						int startIndex = 7;
 						while ( isspace( yytext[startIndex] )) startIndex++;
 
@@ -191,6 +198,12 @@ char *parseDefines(char *src);
 							}
 							free(variableName);
 							free(definition);
+						} else {
+							while (endIndex <= yyleng && (yytext[endIndex] == ' ' || yytext[endIndex] == '\t'))
+								endIndex++;
+							if (endIndex <= yyleng){
+								defineValues.push_back(std::string(yytext + endIndex, yyleng - endIndex));
+							}
 						}
 						__defines[key] = defineValues;
 						
@@ -239,6 +252,7 @@ char *parseDefines(char *src);
 <preprocessorIgnore>\n  { __fileStack->lineNum++; }
 
 <preprocessorIgnore>#endif.*\n 	{ 	
+						__fileStack->lineNum++;
 						BEGIN(INITIAL); 
 					}
 
@@ -246,43 +260,105 @@ char *parseDefines(char *src);
 
 
 #endif.*\n 			{ 
+						__fileStack->lineNum++
 						; // TODO: unput .* characters 
 					}
 
 
-\n 					{ 
-					/**
-					* Newline. Increases line count and returns token NEWLINE
-					*/
- 						__fileStack->lineNum++; return NEWLINE; 
- 					}
+(\n)|(\r\n)|(\r) 			{ 
+								/**
+								* Newline. Increases line count and returns token NEWLINE
+								*/
+			 					__fileStack->lineNum++; return NEWLINE; 
+		 					}
+^([ \t]*)(\n)|(\r\n)|(\r) 	{ 
+								/**
+								* Newline. Increases line count and returns token NEWLINE
+								*/
+			 					__fileStack->lineNum++; return NEWLINE; 
+		 					}
 
-.*					{
-						//std::cout << "LINE " << __fileStack->lineNum << ": " << yytext << std::endl;
-						if (strstr(yytext, "include") == NULL && strstr(yytext, "#endif") == NULL) {
-							char *yytextParsed;
-							if ((yytextParsed = parseDefines(yytext)) == NULL){
-								
-								// Very ugly way of stripping comments. Really should be handled differently
-								// TODO: Leave this to lexer
-								for (int i = 0; i < yyleng; i++)
-									if (yytext[i] == ';')
-										yytext[i] = '\0';
-								yylval.sval = yytext;
-								yyleng = strlen(yytext);
+.equ 				{
+						return EQU;
+					}
 
-								return LINE;
-							} else {
-								for (int i = strlen(yytextParsed)-1; i >= 0; i--){
-									unput(yytextParsed[i]);
-								}
-								free(yytextParsed);
-							}
+.def 				{
+						return DEF;
+					}
+
+.device 			{
+						return DEVICE;
+					}
+
+=					{
+						return OP_EQUALS;
+					}
+
+,					{
+						return OP_COMMA;
+					}
+
+^[_A-Za-z]+:		{
+						Label *node = new Label;
+						node->setLabel(std::string(yytext));
+						yylval.node = node;
+						return LABEL;
+					}
+
+^#pragma[ \t].*\n		{
+						__fileStack->lineNum++;
+						yytext[yyleng-1] = '\0';
+						Pragma *node = new Pragma;
+						node->setPragma(std::string(yytext+9));
+						yylval.node = node;
+						return PRAGMA;
+					}
+
+r[0-9]{1,2}			{
+						Register *node = new Register;
+						node->setRegister(std::string(yytext));
+						yylval.node = node;
+						return REGISTER_VALUE;
+					}
+
+[_A-Za-z][_A-Za-z0-9]*(\(.*\))? {
+						char *yytextParsed;
+						if ((yytextParsed = parseDefines(yytext)) == NULL){
+							Identifier *node = new Identifier;
+							node->setIdentifier(std::string(yytext));
+							yylval.node = node;
+							return IDENTIFIER;
 						} else {
-							REJECT;
+							for (int i = strlen(yytextParsed)-1; i >= 0; i--){
+								unput((int)yytextParsed[i]);
+							}
+							free(yytextParsed);
 						}
 					}
 
+0x[0-9a-f]+			{
+						int temp;
+						IntegerValue *node = new IntegerValue;
+						sscanf(yytext, "%x", &temp);
+						node->setIntegerValue(temp);
+						yylval.node = node;
+						return VALUE;
+					}
+
+[0-9]+				{
+						int temp;
+						IntegerValue *node = new IntegerValue;
+						sscanf(yytext, "%d", &temp);
+						node->setIntegerValue(temp);
+						yylval.node = node;
+						return VALUE;
+					}
+
+^([ \t]+)			{
+						return WHITESPACE;
+					}
+
+([ \t])+ 			{ /* ignore whitespace not on the beginning of the line */; }
 
 <<EOF>>				{
 					/**
@@ -293,11 +369,11 @@ char *parseDefines(char *src);
 						if ( --include_stack_ptr == -1 ){
 							return END_OF_FILE;
 		                } else {
-		                	std::cout << "Continuing reading " << std::endl;
+		            //    	std::cout << "Continuing reading " << std::endl;
                      		yy_delete_buffer( YY_CURRENT_BUFFER );
                      		yy_switch_to_buffer( include_stack[include_stack_ptr] );
                      		__fileStack = __fileStack->previous;
-                     		std::cout << "Continuing reading " << __fileStack->fileName << std::endl;
+                    // 		std::cout << "Continuing reading " << __fileStack->fileName << std::endl;
                      	}
                  	}
 
@@ -309,7 +385,6 @@ char *parseDefines(char *src);
 
 char *parseDefines(char *src){
 	std::string parsed(src);
-	//std::cout << parsed << std::endl;
 	bool wasChanged = false;
 	for (std::map<std::string, std::vector<std::string> >::const_iterator it = __defines.begin();
 			it != __defines.end();
@@ -317,52 +392,55 @@ char *parseDefines(char *src){
 		) {
 		std::string define = it->first;
 		std::vector<std::string> values = it->second;
-
 		size_t found = parsed.find(define);
 		if (found != std::string::npos){
-			int openBracesCount = 0;
-			int positionOffset = 0;
-			int argumentStartIndex = 0;
-			int argumentEndIndex = 0;
-			while (1){
-				positionOffset++;
-				if (parsed[positionOffset] == '(') {
-					openBracesCount++;
-					if (openBracesCount == 1){
-						argumentStartIndex = positionOffset;
+			size_t positionOffset = found + define.length();
+			size_t argumentStartIndex = 0;
+			size_t argumentEndIndex = 0;
+			if (positionOffset < parsed.length() && parsed[positionOffset] == '('){
+				int openBracesCount = 1;
+				argumentStartIndex = positionOffset + 1;
+				while (1){
+					positionOffset++;
+					if (parsed[positionOffset] == '(') {
+						openBracesCount++;
+					}
+					if (parsed[positionOffset] == ')') {
+						openBracesCount--;
+						if (openBracesCount == 0){
+							argumentEndIndex = positionOffset;
+							break;
+						}
 					}
 				}
-				if (parsed[positionOffset] == ')') {
-					openBracesCount--;
-					if (openBracesCount == 0){
-						argumentEndIndex = positionOffset;
-						break;
+				std::string variable(parsed, argumentStartIndex, argumentEndIndex - argumentStartIndex);
+				std::string temp;
+				temp.append(parsed, 0, found);
+				for (std::vector<std::string>::const_iterator it2 = values.begin();
+					 it2 != values.end();
+					 ++it2){
+					temp.append(*it2);
+					if (it2 != (--values.end())){
+						temp.append(variable);
 					}
 				}
-			}
-			std::string variable(parsed, argumentStartIndex+1, (argumentEndIndex) - (argumentStartIndex+1));
-			std::string temp;
-			temp.append(parsed, 0, found);
-	//		std::cout << "ROOT: " << temp << std::endl;
-			for (std::vector<std::string>::const_iterator it2 = values.begin();
-				 it2 != values.end();
-				 ++it2){
-				temp.append(*it2);
-	//			std::cout << "Appending " << *it2 << std::endl;
-				if (it2 != (--values.end())){
-	//				std::cout << "Appending variable" << variable << std::endl;
-					temp.append(variable);
+				temp.append(parsed, argumentEndIndex+1, parsed.length()-(argumentEndIndex+1));
+				wasChanged = true;
+				parsed = temp;
+			} else {
+				std::string temp;
+				temp.append(parsed, 0, found);
+				if (values.size() > 0) {
+					temp.append(values[0]);
 				}
+				if (found + define.length() < parsed.length())
+					temp.append(parsed, found + define.length(), parsed.length() - (found + define.length()) );
+				wasChanged = true;
+				parsed = temp;
 			}
-			temp.append(parsed, argumentEndIndex+1, parsed.length()-(argumentEndIndex+1));
-	//		std::cout << "STEP: " << temp << std::endl;
-			wasChanged = true;
-			parsed = temp;
 		}
 	}
 	if (wasChanged) {
-		//std::cout << parsed << std::endl;
-	//	std::cout << "RETURNING" << std::endl;
 		return strdup(parsed.c_str());
 	} else { 
 		return NULL;

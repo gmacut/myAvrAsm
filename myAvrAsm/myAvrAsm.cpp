@@ -11,6 +11,8 @@
 
 #include "myAvrAsm.tab.h"
 
+#include "instructions/index.h"
+
 // stuff from flex that bison needs to know about:
 extern int yylex();
 extern int yyparse();
@@ -51,6 +53,10 @@ InputFileRecord *__fileStack;
  * #DEFINE statement)
  */
 std::map<std::string, std::vector<std::string> > __defines;
+
+std::map<int, Line *> __ASTTopNodes;
+
+int __currentlyParsedASTindex;
 
 
 
@@ -106,6 +112,8 @@ int main(int argc, char* argv[], char* envp[]) {
 		__fileStack->fileName = __inputFileNames[i];
 		__fileStack->file = input;
 		__fileStack->previous = NULL;
+		__currentlyParsedASTindex = i;
+		__ASTTopNodes[__currentlyParsedASTindex] = new Line;
 		do {
 			yyparse();
 		} while(!feof(yyin));

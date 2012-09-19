@@ -11,7 +11,6 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <None Include=".gitignore" />
     <None Include="example\AVRAssembler1.asm">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
     </None>
@@ -25,10 +24,31 @@
     <None Include="runLexAndYacc.bat" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="instructions\ASTNode.h" />
     <ClInclude Include="InputFileRecord.h" />
+    <ClInclude Include="instructions\Identifier.h" />
+    <ClInclude Include="instructions\index.h" />
+    <ClInclude Include="instructions\IntegerValue.h" />
+    <ClInclude Include="instructions\Label.h" />
+    <ClInclude Include="instructions\Line.h" />
+    <ClInclude Include="instructions\PragmaArgs.h" />
+    <ClInclude Include="instructions\PseudoDef.h" />
+    <ClInclude Include="instructions\PseudoDevice.h" />
+    <ClInclude Include="instructions\PseudoEqu.h" />
+    <ClInclude Include="instructions\Register.h" />
     <ClInclude Include="myAvrAsm.tab.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="instructions\ASTNode.cpp" />
+    <ClCompile Include="instructions\Identifier.cpp" />
+    <ClCompile Include="instructions\IntegerValue.cpp" />
+    <ClCompile Include="instructions\Label.cpp" />
+    <ClCompile Include="instructions\Line.cpp" />
+    <ClCompile Include="instructions\PragmaArgs.cpp" />
+    <ClCompile Include="instructions\PseudoDef.cpp" />
+    <ClCompile Include="instructions\PseudoDevice.cpp" />
+    <ClCompile Include="instructions\PseudoEqu.cpp" />
+    <ClCompile Include="instructions\Register.cpp" />
     <ClCompile Include="lex.yy.c" />
     <ClCompile Include="myAvrAsm.cpp" />
     <ClCompile Include="myAvrAsm.tab.c" />

@@ -10,6 +10,36 @@
     <ClCompile Include="myAvrAsm.tab.c">
       <Filter>Source - Generated</Filter>
     </ClCompile>
+    <ClCompile Include="instructions\ASTNode.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\IntegerValue.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\Label.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\Line.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\PragmaArgs.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\PseudoDef.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\PseudoDevice.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\PseudoEqu.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\Register.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
+    <ClCompile Include="instructions\Identifier.cpp">
+      <Filter>instructions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InputFileRecord.h">
@@ -18,9 +48,41 @@
     <ClInclude Include="myAvrAsm.tab.h">
       <Filter>Headers - Generated</Filter>
     </ClInclude>
+    <ClInclude Include="instructions\ASTNode.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\index.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\IntegerValue.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\Label.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\Line.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\PragmaArgs.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\PseudoDef.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\PseudoDevice.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\PseudoEqu.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\Register.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
+    <ClInclude Include="instructions\Identifier.h">
+      <Filter>instructions</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include=".gitignore" />
     <None Include="Makefile" />
     <None Include="runLexAndYacc.bat" />
     <None Include="example\AVRAssembler1.asm">
@@ -60,6 +122,9 @@
     </Filter>
     <Filter Include="Yacc">
       <UniqueIdentifier>{01d9081c-1254-460e-8ec6-4296bf79c262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="instructions">
+      <UniqueIdentifier>{ba1adc34-d2b5-4e53-8f62-136baf41f8a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

@@ -18,6 +18,7 @@ REMOVE_COMMAND=rm
 REMOVE_FLAGS=rf
 endif
 
+INSTRUCTIONS=$(wildcard instructions/*.cpp)
 
 
 all: clean mkdir executable 
@@ -30,7 +31,7 @@ else
 endif
 
 executable: prepare
-	$(CXX) $(CXXFLAGS) -o $(PROJNAME) $(SOURCES)
+	$(CXX) $(CXXFLAGS) -o $(PROJNAME) $(SOURCES) $(INSTRUCTIONS)
 
 prepare: flex bison
 
