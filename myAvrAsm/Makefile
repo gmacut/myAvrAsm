@@ -1,37 +1,42 @@
 
 PROJNAME=myAvrAsm
 
-PLATFORM=WIN
-
 SOURCES=myAvrAsm.cpp myAvrAsm.tab.c lex.yy.c
 OUTPUTDIR=output
+TARGET=myAvrAsm
+INSTRUCTIONS=$(wildcard instructions/*.cpp)
+EXAMPLES=example/*
 
 CXX=g++
-CXXFLAGS=-Wall -Wl,--enable-auto-import -Wno-unknown-pragmas
-
-
-ifeq ($(PLATFORM), WIN)
-REMOVE_COMMAND=del
-REMOVE_FLAGS=/F /S /Q
-else
+CXXFLAGS=-Wall -static -Wno-unknown-pragmas
+COPY_COMMAND=cp
 REMOVE_COMMAND=rm
-REMOVE_FLAGS=rf
+REMOVE_FLAGS=-rf
+
+SYS:= $(shell gcc -dumpmachine)
+ifneq (, $(findstring mingw, $(SYS)))
+PLATFORM=WIN
+else 
+PLATFORM=LINUX
 endif
 
-INSTRUCTIONS=$(wildcard instructions/*.cpp)
+ifeq ($(PLATFORM), WIN)
+TARGET=myAvrAsm.exe
+EXAMPLES=example\*.*
+COPY_COMMAND=copy
+REMOVE_COMMAND=del
+REMOVE_FLAGS=/F /S /Q
+CXXFLAGS+= -Wl,--enable-auto-import 
+endif
+
 
 
 all: clean mkdir executable 
-ifeq ($(PLATFORM), WIN) 
-	copy $(PROJNAME).exe $(OUTPUTDIR)
-	copy example\*.* $(OUTPUTDIR)
-else
-	cp $(PROJNAME).exe $(OUTPUTDIR)
-	cp example/* $(OUTPUTDIR)
-endif
+	$(COPY_COMMAND) $(TARGET) $(OUTPUTDIR)
+	$(COPY_COMMAND) $(EXAMPLES) $(OUTPUTDIR)
 
 executable: prepare
-	$(CXX) $(CXXFLAGS) -o $(PROJNAME) $(SOURCES) $(INSTRUCTIONS)
+	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES) $(INSTRUCTIONS)
 
 prepare: flex bison
 
@@ -45,4 +50,4 @@ mkdir:
 	-mkdir $(OUTPUTDIR)
 
 clean:
-	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(PROJNAME).exe $(OUTPUTDIR)
+	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(OUTPUTDIR)
