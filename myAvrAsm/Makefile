@@ -8,7 +8,7 @@ INSTRUCTIONS=$(wildcard instructions/*.cpp)
 EXAMPLES=example/*
 
 CXX=g++
-CXXFLAGS=-Wall -static -Wno-unknown-pragmas
+CXXFLAGS=-Wall -Wno-unknown-pragmas
 COPY_COMMAND=cp
 REMOVE_COMMAND=rm
 REMOVE_FLAGS=-rf
@@ -27,7 +27,7 @@ EXAMPLES=example\*.*
 COPY_COMMAND=copy
 REMOVE_COMMAND=del
 REMOVE_FLAGS=/F /S /Q
-CXXFLAGS+= -Wl,--enable-auto-import 
+CXXFLAGS+= -Wl,--enable-auto-import -static
 endif
 
 
