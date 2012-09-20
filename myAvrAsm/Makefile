@@ -13,6 +13,7 @@ COPY_COMMAND=cp
 REMOVE_COMMAND=rm
 REMOVE_FLAGS=-rf
 
+
 SYS:= $(shell gcc -dumpmachine)
 ifneq (, $(findstring mingw, $(SYS)))
 PLATFORM=WIN
