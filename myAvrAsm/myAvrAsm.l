@@ -309,7 +309,7 @@ char *parseDefines(char *src);
 						__fileStack->lineNum++;
 						yytext[yyleng-1] = '\0';
 						Pragma *node = new Pragma;
-						node->setPragma(std::string(yytext+9));
+						node->setPragma(std::string(yytext+8));
 						yylval.node = node;
 						return PRAGMA;
 					}
