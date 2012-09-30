@@ -60,7 +60,7 @@ $(DIRS_CREATED):
 
 
 
-$(TARGET): GENERATE_PARSER $(OBJS)
+$(TARGET): INDEX GENERATE_PARSER $(OBJS)
 	@echo [linking $@]
 	@$(CXX) $(OBJS) -o$@ 
 
@@ -84,11 +84,18 @@ src/myAvrAsm.parser.c:	 src/myAvrAsm.y $(DIRS_CREATED)
 
 
 
+INSTR = $(wildcard src/instructions/*.h)
+
+INDEX: $(INSTR)
+	@$(shell echo "#pragma once" > src/instructions/index.h)
+	@$(foreach INCL, $(INSTR:src/instructions/%.h=#include<%.h>) , $(shell echo "$(INCL)" >> src/instructions/index.h))
+
+
 
 cleanall: clean
 	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(OUTPUTDIR) $(DOC_OUTPUTDIR)
 clean:
-	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(BUILDDIR)
+	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(BUILDDIR) src/instructions/index.h
 
 
 
@@ -102,3 +109,6 @@ $(DOC_OUTPUTDIR)/%.html: $(DOC_DIR)/%.md $(DIRS_CREATED)
 	cat $(DOC_DIR)/template-end.html >> $@
 
 docs: $(DOCTARGETS)
+
+
+
