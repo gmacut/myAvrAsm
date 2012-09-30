@@ -1,84 +1,84 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="lex.yy.c">
+    <ClCompile Include="src\myAvrAsm.lexer.c">
       <Filter>Source - Generated</Filter>
     </ClCompile>
-    <ClCompile Include="myAvrAsm.cpp">
+    <ClCompile Include="src\myAvrAsm.parser.c">
+      <Filter>Source - Generated</Filter>
+    </ClCompile>
+    <ClCompile Include="src\myAvrAsm.cpp">
       <Filter>Source</Filter>
     </ClCompile>
-    <ClCompile Include="myAvrAsm.tab.c">
-      <Filter>Source - Generated</Filter>
-    </ClCompile>
-    <ClCompile Include="instructions\ASTNode.cpp">
+    <ClCompile Include="src\instructions\ASTNode.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\IntegerValue.cpp">
+    <ClCompile Include="src\instructions\Identifier.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\Label.cpp">
+    <ClCompile Include="src\instructions\IntegerValue.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\Line.cpp">
+    <ClCompile Include="src\instructions\Label.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\PragmaArgs.cpp">
+    <ClCompile Include="src\instructions\Line.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\PseudoDef.cpp">
+    <ClCompile Include="src\instructions\Pragma.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\PseudoDevice.cpp">
+    <ClCompile Include="src\instructions\PseudoDef.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\PseudoEqu.cpp">
+    <ClCompile Include="src\instructions\PseudoDevice.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\Register.cpp">
+    <ClCompile Include="src\instructions\PseudoEqu.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
-    <ClCompile Include="instructions\Identifier.cpp">
+    <ClCompile Include="src\instructions\Register.cpp">
       <Filter>instructions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InputFileRecord.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="myAvrAsm.tab.h">
+    <ClInclude Include="src\myAvrAsm.parser.h">
       <Filter>Headers - Generated</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\ASTNode.h">
+    <ClInclude Include="src\InputFileRecord.h">
+      <Filter>Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="src\instructions\ASTNode.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\index.h">
+    <ClInclude Include="src\instructions\Identifier.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\IntegerValue.h">
+    <ClInclude Include="src\instructions\index.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\Label.h">
+    <ClInclude Include="src\instructions\IntegerValue.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\Line.h">
+    <ClInclude Include="src\instructions\Label.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\PragmaArgs.h">
+    <ClInclude Include="src\instructions\Line.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\PseudoDef.h">
+    <ClInclude Include="src\instructions\Pragma.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\PseudoDevice.h">
+    <ClInclude Include="src\instructions\PseudoDef.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\PseudoEqu.h">
+    <ClInclude Include="src\instructions\PseudoDevice.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\Register.h">
+    <ClInclude Include="src\instructions\PseudoEqu.h">
       <Filter>instructions</Filter>
     </ClInclude>
-    <ClInclude Include="instructions\Identifier.h">
+    <ClInclude Include="src\instructions\Register.h">
       <Filter>instructions</Filter>
     </ClInclude>
   </ItemGroup>
@@ -91,14 +91,14 @@
     <None Include="example\m16def.inc">
       <Filter>Example input</Filter>
     </None>
-    <None Include="myAvrAsm.l">
-      <Filter>Lex</Filter>
-    </None>
-    <None Include="myAvrAsm.y">
-      <Filter>Yacc</Filter>
-    </None>
     <None Include="example\hello.asm">
       <Filter>Example input</Filter>
+    </None>
+    <None Include="src\myAvrAsm.l">
+      <Filter>Lex</Filter>
+    </None>
+    <None Include="src\myAvrAsm.y">
+      <Filter>Yacc</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

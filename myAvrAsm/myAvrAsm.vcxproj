@@ -19,39 +19,39 @@
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
     </None>
     <None Include="Makefile" />
-    <None Include="myAvrAsm.l" />
-    <None Include="myAvrAsm.y" />
     <None Include="runLexAndYacc.bat" />
+    <None Include="src\myAvrAsm.l" />
+    <None Include="src\myAvrAsm.y" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="instructions\ASTNode.h" />
-    <ClInclude Include="InputFileRecord.h" />
-    <ClInclude Include="instructions\Identifier.h" />
-    <ClInclude Include="instructions\index.h" />
-    <ClInclude Include="instructions\IntegerValue.h" />
-    <ClInclude Include="instructions\Label.h" />
-    <ClInclude Include="instructions\Line.h" />
-    <ClInclude Include="instructions\PragmaArgs.h" />
-    <ClInclude Include="instructions\PseudoDef.h" />
-    <ClInclude Include="instructions\PseudoDevice.h" />
-    <ClInclude Include="instructions\PseudoEqu.h" />
-    <ClInclude Include="instructions\Register.h" />
-    <ClInclude Include="myAvrAsm.tab.h" />
+    <ClInclude Include="src\InputFileRecord.h" />
+    <ClInclude Include="src\instructions\ASTNode.h" />
+    <ClInclude Include="src\instructions\Identifier.h" />
+    <ClInclude Include="src\instructions\index.h" />
+    <ClInclude Include="src\instructions\IntegerValue.h" />
+    <ClInclude Include="src\instructions\Label.h" />
+    <ClInclude Include="src\instructions\Line.h" />
+    <ClInclude Include="src\instructions\Pragma.h" />
+    <ClInclude Include="src\instructions\PseudoDef.h" />
+    <ClInclude Include="src\instructions\PseudoDevice.h" />
+    <ClInclude Include="src\instructions\PseudoEqu.h" />
+    <ClInclude Include="src\instructions\Register.h" />
+    <ClInclude Include="src\myAvrAsm.parser.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="instructions\ASTNode.cpp" />
-    <ClCompile Include="instructions\Identifier.cpp" />
-    <ClCompile Include="instructions\IntegerValue.cpp" />
-    <ClCompile Include="instructions\Label.cpp" />
-    <ClCompile Include="instructions\Line.cpp" />
-    <ClCompile Include="instructions\PragmaArgs.cpp" />
-    <ClCompile Include="instructions\PseudoDef.cpp" />
-    <ClCompile Include="instructions\PseudoDevice.cpp" />
-    <ClCompile Include="instructions\PseudoEqu.cpp" />
-    <ClCompile Include="instructions\Register.cpp" />
-    <ClCompile Include="lex.yy.c" />
-    <ClCompile Include="myAvrAsm.cpp" />
-    <ClCompile Include="myAvrAsm.tab.c" />
+    <ClCompile Include="src\instructions\ASTNode.cpp" />
+    <ClCompile Include="src\instructions\Identifier.cpp" />
+    <ClCompile Include="src\instructions\IntegerValue.cpp" />
+    <ClCompile Include="src\instructions\Label.cpp" />
+    <ClCompile Include="src\instructions\Line.cpp" />
+    <ClCompile Include="src\instructions\Pragma.cpp" />
+    <ClCompile Include="src\instructions\PseudoDef.cpp" />
+    <ClCompile Include="src\instructions\PseudoDevice.cpp" />
+    <ClCompile Include="src\instructions\PseudoEqu.cpp" />
+    <ClCompile Include="src\instructions\Register.cpp" />
+    <ClCompile Include="src\myAvrAsm.cpp" />
+    <ClCompile Include="src\myAvrAsm.lexer.c" />
+    <ClCompile Include="src\myAvrAsm.parser.c" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{14974A73-7FA9-4F37-968F-ECA3F9A0C35A}</ProjectGuid>
@@ -104,8 +104,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <PreBuildEvent>
-      <Command>flex myAvrAsm.l
-bison -d myAvrAsm.y</Command>
+      <Command>flex -i -osrc/myAvrAsm.lexer.c src/myAvrAsm.l
+bison -d -osrc/myAvrAsm.parser.c src/myAvrAsm.y</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>copy example\*.* $(OutDir)</Command>
@@ -128,7 +128,8 @@ bison -d myAvrAsm.y</Command>
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
     <PreBuildEvent>
-      <Command>runLexAndYacc.bat $(ProjectName)</Command>
+      <Command>flex -i -osrc/myAvrAsm.lexer.c src/myAvrAsm.l
+bison -d -osrc/myAvrAsm.parser.c src/myAvrAsm.y</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

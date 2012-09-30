@@ -1,10 +1,7 @@
 
 PROJNAME=myAvrAsm
 
-SOURCES=myAvrAsm.cpp myAvrAsm.tab.c lex.yy.c
-OUTPUTDIR=output
 TARGET=myAvrAsm
-INSTRUCTIONS=$(wildcard instructions/*.cpp)
 EXAMPLES=example/*
 
 CXX=g++
@@ -12,6 +9,17 @@ CXXFLAGS=-Wall -Wno-unknown-pragmas
 COPY_COMMAND=cp
 REMOVE_COMMAND=rm
 REMOVE_FLAGS=-rf
+
+
+SRCDIRS = src src/instructions
+OUTPUTDIR = output
+BUILDDIR = build
+
+DIRS := $(SRCDIRS)
+FILES := $(foreach DIR,$(DIRS),$(wildcard $(DIR)/*.c $(DIR)/*.cpp))
+
+OBJS := $(addprefix $(BUILDDIR)/,$(FILES:.c=.o))
+OBJS := $(OBJS:.cpp=.o)
 
 
 SYS:= $(shell gcc -dumpmachine)
@@ -23,32 +31,50 @@ endif
 
 ifeq ($(PLATFORM), WIN)
 TARGET=myAvrAsm.exe
-EXAMPLES=example\*.*
-COPY_COMMAND=copy
-REMOVE_COMMAND=del
-REMOVE_FLAGS=/F /S /Q
+#EXAMPLES=example\*.*
+#COPY_COMMAND=copy
+#REMOVE_COMMAND=del
+#REMOVE_FLAGS=/F /Q
 CXXFLAGS+= -Wl,--enable-auto-import -static
 endif
 
 
 
-all: clean mkdir executable 
+all: $(TARGET)
+	@echo Copying to output dir...
 	$(COPY_COMMAND) $(TARGET) $(OUTPUTDIR)
 	$(COPY_COMMAND) $(EXAMPLES) $(OUTPUTDIR)
 
-executable: prepare
-	$(CXX) $(CXXFLAGS) -o $(TARGET) $(SOURCES) $(INSTRUCTIONS)
+$(TARGET): $(OBJS)
+	@echo [linking $@]
+	@$(CXX) $(OBJS) -o$@ 
+
+$(BUILDDIR)/%.o: %.c prepare
+	@echo [compiling] $< ...
+	@$(CXX) -c $< -o $@ $(CXXFLAGS)
+
+$(BUILDDIR)/%.o: %.cpp prepare
+	@echo [compiling] $< ...
+	@$(CXX) -c $< -o $@ $(CXXFLAGS)
 
 prepare: flex bison
 
 flex: bison
-	flex -i $(PROJNAME).l
+	@echo [FLEX] ...
+	flex -i -osrc/$(PROJNAME).lexer.c src/$(PROJNAME).l
 
-bison:
-	bison -d $(PROJNAME).y
+bison: dirs
+	@echo [BISON] ...
+	bison -d -osrc/$(PROJNAME).parser.c src/$(PROJNAME).y
 
-mkdir: 
-	-mkdir $(OUTPUTDIR)
 
+# create required directories in $(BUILDDIR) directory (including $(BUILDDIR))
+dirs:
+	@-mkdir -p $(BUILDDIR)
+	@-mkdir -p $(OUTPUTDIR)
+	@-$(foreach DIR,$(DIRS), mkdir -p $(BUILDDIR)/$(DIR); )
+
+cleanall: clean
+	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(OUTPUTDIR)
 clean:
-	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(OUTPUTDIR)
+	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(BUILDDIR)

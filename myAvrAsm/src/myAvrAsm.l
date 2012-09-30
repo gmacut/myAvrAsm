@@ -19,7 +19,7 @@
 
 using namespace std;
 
-#include "myAvrAsm.tab.h"
+#include "myAvrAsm.parser.h"
 
 #define YY_DECL extern int yylex()
 

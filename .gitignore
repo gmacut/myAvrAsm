@@ -10,3 +10,5 @@ output
 *.opensdf
 *~
 *.suo
+
+myAvrAsm.v11.suo

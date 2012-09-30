@@ -9,7 +9,7 @@
 
 #include "InputFileRecord.h"
 
-#include "myAvrAsm.tab.h"
+#include "myAvrAsm.parser.h"
 
 #include "instructions/index.h"
 
