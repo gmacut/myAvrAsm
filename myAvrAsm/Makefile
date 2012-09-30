@@ -102,8 +102,3 @@ $(DOC_OUTPUTDIR)/%.html: $(DOC_DIR)/%.md $(DIRS_CREATED)
 	cat $(DOC_DIR)/template-end.html >> $@
 
 docs: $(DOCTARGETS)
-
-
-#	$(foreach FILE, $(wildcard doc-src/*.md), cat doc-src/template-start.html > $(FILE:doc-src/%.md=doc/%.html))
-#	$(foreach FILE, $(wildcard doc-src/*.md), perl bin/Markdown.pl $(FILE) >> $(FILE:doc-src/%.md=doc/%.html))
-#	$(foreach FILE, $(wildcard doc-src/*.md), cat doc-src/template-end.html >> $(FILE:doc-src/%.md=doc/%.html))
