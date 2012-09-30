@@ -88,7 +88,7 @@ INSTR = $(wildcard src/instructions/*.h)
 
 INDEX: $(INSTR)
 	@$(shell echo "#pragma once" > src/instructions/index.h)
-	@$(foreach INCL, $(INSTR:src/instructions/%.h=#include<%.h>) , $(shell echo "$(INCL)" >> src/instructions/index.h))
+	@$(foreach INCL, $(INSTR:src/instructions/%.h=#include\"%.h\") , $(shell echo "$(INCL)" >> src/instructions/index.h))
 
 
 

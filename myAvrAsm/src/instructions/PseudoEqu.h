@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ASTNode.h"
-#include "index.h"
+#include "Identifier.h"
+#include "IntegerValue.h"
 
 class PseudoEqu :
 	public ASTNode

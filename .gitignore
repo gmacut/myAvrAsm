@@ -13,3 +13,4 @@ output
 myAvrAsm.v11.suo
 
 */doc/*
+myAvrAsm/src/instructions/index.h
