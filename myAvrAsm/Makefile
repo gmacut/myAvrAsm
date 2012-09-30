@@ -103,9 +103,9 @@ DOCFILES = $(wildcard $(DOC_DIR)/*.md)
 DOCTARGETS = $(DOCFILES:$(DOC_DIR)/%.md=$(DOC_DIR)/html/%.html)
 
 $(DOC_DIR)/html/%.html: $(DOC_DIR)/%.md $(DIRS_CREATED) 
-	cat $(DOC_DIR)/template-start.html > $@
+	cat $(DOC_DIR)/template/template-start.html > $@
 	perl bin/Markdown.pl $< >> $@
-	cat $(DOC_DIR)/template-end.html >> $@
+	cat $(DOC_DIR)/template/template-end.html >> $@
 
 docs: $(DOCTARGETS)
 
