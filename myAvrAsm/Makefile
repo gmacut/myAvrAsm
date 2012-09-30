@@ -13,8 +13,7 @@ REMOVE_FLAGS=-rf
 SRCDIRS = src src/instructions
 OUTPUTDIR = output
 BUILDDIR = build
-DOC_OUTPUTDIR = doc
-DOC_DIR = doc-src
+DOC_DIR = doc
 
 DIRS := $(SRCDIRS)
 FILES := $(foreach DIR,$(DIRS),$(wildcard $(DIR)/*.c $(DIR)/*.cpp))
@@ -54,7 +53,7 @@ $(DIRS_CREATED):
 	@echo "Creating build directory structure..."
 	@-mkdir -p $(BUILDDIR)
 	@-mkdir -p $(OUTPUTDIR)
-	@-mkdir -p $(DOC_OUTPUTDIR)
+	@-mkdir -p $(DOC_DIR)/html
 	@-$(foreach DIR,$(DIRS), mkdir -p $(BUILDDIR)/$(DIR); )
 	@touch $(DIRS_CREATED)
 
@@ -93,7 +92,7 @@ INDEX: $(INSTR)
 
 
 cleanall: clean
-	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(OUTPUTDIR) $(DOC_OUTPUTDIR)
+	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(OUTPUTDIR) $(DOC_DIR)/html
 clean:
 	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(BUILDDIR) src/instructions/index.h
 
@@ -101,9 +100,9 @@ clean:
 
 
 DOCFILES = $(wildcard $(DOC_DIR)/*.md)
-DOCTARGETS = $(DOCFILES:$(DOC_DIR)/%.md=$(DOC_OUTPUTDIR)/%.html)
+DOCTARGETS = $(DOCFILES:$(DOC_DIR)/%.md=$(DOC_DIR)/html/%.html)
 
-$(DOC_OUTPUTDIR)/%.html: $(DOC_DIR)/%.md $(DIRS_CREATED) 
+$(DOC_DIR)/html/%.html: $(DOC_DIR)/%.md $(DIRS_CREATED) 
 	cat $(DOC_DIR)/template-start.html > $@
 	perl bin/Markdown.pl $< >> $@
 	cat $(DOC_DIR)/template-end.html >> $@

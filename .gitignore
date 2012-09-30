@@ -12,5 +12,5 @@ output
 
 myAvrAsm.v11.suo
 
-*/doc/*
+*/doc/html/*
 myAvrAsm/src/instructions/index.h
