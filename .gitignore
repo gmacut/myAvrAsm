@@ -1,4 +1,5 @@
-out/*
+output/*
+build/*
 *.exe
 *.tab.c
 *.tab.h

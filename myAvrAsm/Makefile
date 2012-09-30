@@ -10,7 +10,6 @@ COPY_COMMAND=cp
 REMOVE_COMMAND=rm
 REMOVE_FLAGS=-rf
 
-
 SRCDIRS = src src/instructions
 OUTPUTDIR = output
 BUILDDIR = build
