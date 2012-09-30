@@ -1,12 +1,10 @@
-output/*
-build/*
-*.exe
-*.tab.c
-*.tab.h
-*.yy.c
+build
 Debug
 Release
 output
+*.exe
+*.parser.*
+*.lexer.*
 *.sdf
 *.opensdf
 *~
