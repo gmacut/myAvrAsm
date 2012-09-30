@@ -11,3 +11,5 @@ output
 *.suo
 
 myAvrAsm.v11.suo
+
+*/doc/*

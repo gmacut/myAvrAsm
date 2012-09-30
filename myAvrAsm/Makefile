@@ -13,6 +13,8 @@ REMOVE_FLAGS=-rf
 SRCDIRS = src src/instructions
 OUTPUTDIR = output
 BUILDDIR = build
+DOC_OUTPUTDIR = doc
+DOC_DIR = doc-src
 
 DIRS := $(SRCDIRS)
 FILES := $(foreach DIR,$(DIRS),$(wildcard $(DIR)/*.c $(DIR)/*.cpp))
@@ -44,36 +46,64 @@ all: $(TARGET)
 	$(COPY_COMMAND) $(TARGET) $(OUTPUTDIR)
 	$(COPY_COMMAND) $(EXAMPLES) $(OUTPUTDIR)
 
-$(TARGET): $(OBJS)
+
+# create required directories in $(BUILDDIR) directory (including $(BUILDDIR))
+DIRS_CREATED = $(BUILDDIR)/.null
+
+$(DIRS_CREATED):
+	@echo "Creating build directory structure..."
+	@-mkdir -p $(BUILDDIR)
+	@-mkdir -p $(OUTPUTDIR)
+	@-mkdir -p $(DOC_OUTPUTDIR)
+	@-$(foreach DIR,$(DIRS), mkdir -p $(BUILDDIR)/$(DIR); )
+	@touch $(DIRS_CREATED)
+
+
+
+$(TARGET): GENERATE_PARSER $(OBJS)
 	@echo [linking $@]
 	@$(CXX) $(OBJS) -o$@ 
 
-$(BUILDDIR)/%.o: %.c prepare
+$(BUILDDIR)/%.o: %.c
 	@echo [compiling] $< ...
 	@$(CXX) -c $< -o $@ $(CXXFLAGS)
 
-$(BUILDDIR)/%.o: %.cpp prepare
+$(BUILDDIR)/%.o: %.cpp
 	@echo [compiling] $< ...
 	@$(CXX) -c $< -o $@ $(CXXFLAGS)
 
-prepare: flex bison
+GENERATE_PARSER: src/myAvrAsm.lexer.c
 
-flex: bison
+src/myAvrAsm.lexer.c: src/myAvrAsm.l src/myAvrAsm.parser.c
 	@echo [FLEX] ...
-	flex -i -osrc/$(PROJNAME).lexer.c src/$(PROJNAME).l
+	flex -i -o$@ $<
 
-bison: dirs
+src/myAvrAsm.parser.c:	 src/myAvrAsm.y $(DIRS_CREATED)
 	@echo [BISON] ...
-	bison -d -osrc/$(PROJNAME).parser.c src/$(PROJNAME).y
+	bison -d -o$@ $<
 
 
-# create required directories in $(BUILDDIR) directory (including $(BUILDDIR))
-dirs:
-	@-mkdir -p $(BUILDDIR)
-	@-mkdir -p $(OUTPUTDIR)
-	@-$(foreach DIR,$(DIRS), mkdir -p $(BUILDDIR)/$(DIR); )
+
 
 cleanall: clean
-	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(OUTPUTDIR)
+	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(OUTPUTDIR) $(DOC_OUTPUTDIR)
 clean:
 	-$(REMOVE_COMMAND) $(REMOVE_FLAGS) $(PROJNAME) $(TARGET) $(BUILDDIR)
+
+
+
+
+DOCFILES = $(wildcard $(DOC_DIR)/*.md)
+DOCTARGETS = $(DOCFILES:$(DOC_DIR)/%.md=$(DOC_OUTPUTDIR)/%.html)
+
+$(DOC_OUTPUTDIR)/%.html: $(DOC_DIR)/%.md $(DIRS_CREATED) 
+	cat $(DOC_DIR)/template-start.html > $@
+	perl bin/Markdown.pl $< >> $@
+	cat $(DOC_DIR)/template-end.html >> $@
+
+docs: $(DOCTARGETS)
+
+
+#	$(foreach FILE, $(wildcard doc-src/*.md), cat doc-src/template-start.html > $(FILE:doc-src/%.md=doc/%.html))
+#	$(foreach FILE, $(wildcard doc-src/*.md), perl bin/Markdown.pl $(FILE) >> $(FILE:doc-src/%.md=doc/%.html))
+#	$(foreach FILE, $(wildcard doc-src/*.md), cat doc-src/template-end.html >> $(FILE:doc-src/%.md=doc/%.html))
